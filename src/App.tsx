@@ -5,6 +5,7 @@ import { MetricsBar } from './components/MetricsBar';
 import { InteractiveSizer } from './components/InteractiveSizer';
 import { ProductCatalog } from './components/ProductCatalog';
 import { EnginesSection } from './components/EnginesSection';
+import { EngineDetailModal } from './components/EngineDetailModal';
 import { AlternatorsSection } from './components/AlternatorsSection';
 import { PartsAndServiceSection } from './components/PartsAndServiceSection';
 import { AseanComplianceHub } from './components/AseanComplianceHub';
@@ -17,7 +18,7 @@ import { ModelComparisonModal } from './components/ModelComparisonModal';
 import { TechnicalDatasheetModal } from './components/TechnicalDatasheetModal';
 import { RfqModal } from './components/RfqModal';
 import { Footer } from './components/Footer';
-import { GensetProduct } from './types';
+import { GensetProduct, EngineSeries, EngineProduct } from './types';
 import { GENSET_PRODUCTS } from './data/gensets';
 import { MessageSquare, FileText, ChevronUp, ChevronDown } from 'lucide-react';
 import { BUSINESS } from './data/site';
@@ -45,6 +46,9 @@ export default function App() {
 
   const [selectedProductForSpecs, setSelectedProductForSpecs] = useState<GensetProduct | null>(null);
 
+  // Engine modal state
+  const [selectedEngine, setSelectedEngine] = useState<EngineSeries | EngineProduct | null>(null);
+
   // Open RFQ modal with optional prefill
   const handleOpenRfq = (modelId?: string) => {
     setRfqPreselectedModel(modelId || 'tfw-100');
@@ -62,8 +66,14 @@ export default function App() {
     setRfqModalOpen(true);
   };
 
-  const handleViewSpecs = (product: GensetProduct) => {
-    setSelectedProductForSpecs(product);
+  const handleViewSpecs = (product: GensetProduct | EngineSeries | EngineProduct) => {
+    if ('family' in product || 'seriesId' in product) {
+      // It's an engine (series or model)
+      setSelectedEngine(product as EngineSeries | EngineProduct);
+    } else {
+      // It's a genset product
+      setSelectedProductForSpecs(product as GensetProduct);
+    }
   };
 
   const handleOpenDatasheet = (product: GensetProduct) => {
@@ -253,6 +263,13 @@ export default function App() {
       <TechnicalDatasheetModal
         product={selectedProductForDatasheet}
         onClose={() => setSelectedProductForDatasheet(null)}
+        onOpenRfq={(modelId) => handleOpenRfq(modelId)}
+      />
+
+      {/* Engine Detail Modal (Series & Models) */}
+      <EngineDetailModal
+        engine={selectedEngine}
+        onClose={() => setSelectedEngine(null)}
         onOpenRfq={(modelId) => handleOpenRfq(modelId)}
       />
 
