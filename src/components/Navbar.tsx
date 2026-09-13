@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Phone, MessageSquare, Menu, X, Zap, Facebook, Youtube, Linkedin } from 'lucide-react';
+import { Phone, MessageSquare, Menu, X, Zap, Facebook, Youtube, Linkedin, ChevronDown } from 'lucide-react';
 import { BUSINESS, SOCIAL_LINKS } from '../data/site';
 
 interface NavbarProps {
@@ -8,16 +8,20 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ onNavigateTo }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [productsDropdownOpen, setProductsDropdownOpen] = useState(false);
 
   const navItems: { label: string; section: string }[] = [
     { label: 'Home', section: 'home' },
-    { label: 'Gensets', section: 'products' },
-    { label: 'Engines', section: 'engines' },
-    { label: 'Alternators', section: 'alternators' },
-    { label: 'Parts', section: 'parts-service' },
     { label: 'Markets', section: 'asean-hub' },
     { label: 'Technical', section: 'technical' },
     { label: 'Factory', section: 'factory-trust' },
+  ];
+
+  const productItems: { label: string; section: string }[] = [
+    { label: 'Diesel Gensets', section: 'products' },
+    { label: 'Yuchai Engines', section: 'engines' },
+    { label: 'Alternators (TFW/STC)', section: 'alternators' },
+    { label: 'Spare Parts', section: 'parts-service' },
   ];
 
   return (
@@ -121,6 +125,38 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateTo }) => {
                 {item.label}
               </button>
             ))}
+            
+            {/* Products Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setProductsDropdownOpen(!productsDropdownOpen)}
+                onMouseEnter={() => setProductsDropdownOpen(true)}
+                className="px-3 py-1.5 text-sm font-semibold rounded-lg transition-colors whitespace-nowrap text-slate-600 hover:text-blue-600 hover:bg-slate-50 cursor-pointer bg-transparent border-none flex items-center gap-1"
+              >
+                Products
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${productsDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {productsDropdownOpen && (
+                <div
+                  onMouseLeave={() => setProductsDropdownOpen(false)}
+                  className="absolute top-full left-0 mt-1 w-56 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50"
+                >
+                  {productItems.map((item) => (
+                    <button
+                      key={item.section}
+                      onClick={() => {
+                        onNavigateTo(item.section);
+                        setProductsDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer bg-transparent border-none"
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
@@ -168,6 +204,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateTo }) => {
               {item.label}
             </button>
           ))}
+          
+          {/* Products Submenu */}
+          <div className="pt-2 border-t border-slate-100 mt-2">
+            <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider px-2 pb-1">Products</div>
+            {productItems.map((item) => (
+              <button
+                key={item.section}
+                onClick={() => {
+                  onNavigateTo(item.section);
+                  setMobileMenuOpen(false);
+                }}
+                className="block w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 cursor-pointer bg-transparent border-none"
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+          
           <div className="pt-3 border-t border-slate-100 mt-2">
             <a
               href={`https://wa.me/${BUSINESS.whatsapp}`}

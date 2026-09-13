@@ -38,7 +38,6 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
   featured = false,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [perkinsSeriesFilter, setPerkinsSeriesFilter] = useState<'400-1104' | '1106' | '2000' | '4000'>('400-1104');
 
   const filteredProducts = useMemo(() => {
     let products = GENSET_PRODUCTS.filter((item) => {
@@ -54,18 +53,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
         if (!matchesQuery) return false;
       }
 
-      // Perkins Benchmark Filter
-      if (perkinsSeriesFilter === '400-1104') {
-        if (item.primePowerKw > 100) return false;
-      } else if (perkinsSeriesFilter === '1106') {
-        if (item.primePowerKw < 120 || item.primePowerKw > 250) return false;
-      } else if (perkinsSeriesFilter === '2000') {
-        if (item.primePowerKw < 300 || item.primePowerKw > 800) return false;
-      } else if (perkinsSeriesFilter === '4000') {
-        if (item.primePowerKw < 1000) return false;
-      }
-
-      // Power range filter
+      // Power range filter only
       if (activePowerFilter === '30-80') {
         if (item.primePowerKw < 30 || item.primePowerKw > 80) return false;
       } else if (activePowerFilter === '100-300') {
@@ -113,9 +101,9 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
         </div>
 
         {/* Filter Controls Bar */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 mb-8 space-y-4 shadow-sm">
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 mb-8 shadow-sm">
           
-          {/* Top Row: Search & Segment Tabs */}
+          {/* Search & Segment Tabs */}
           <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
             
             {/* Power Segment Tabs */}
@@ -154,34 +142,6 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             </div>
 
           </div>
-
-          {/* Bottom Secondary Quick Filters */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 text-xs">
-            <div className="flex flex-wrap items-center gap-2 text-slate-600">
-              <span className="font-semibold text-blue-700 font-mono text-[11px] uppercase">Perkins Series Equiv:</span>
-              <div className="flex flex-wrap gap-1">
-                {[
-                  { id: '400-1104', label: '400 & 1104 (30–100kW)' },
-                  { id: '1106', label: '1106 Series (120–250kW)' },
-                  { id: '2000', label: '1500 & 2000 (300–800kW)' },
-                  { id: '4000', label: '4000 & 5000 (1000–2200kW)' },
-                ].map((s) => (
-                  <button
-                    key={s.id}
-                    onClick={() => setPerkinsSeriesFilter(s.id as any)}
-                    className={`px-2.5 py-1 rounded text-[11px] transition-colors cursor-pointer ${
-                      perkinsSeriesFilter === s.id 
-                        ? 'bg-blue-50 text-blue-700 font-bold border border-blue-200' 
-                        : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
-                    }`}
-                  >
-                    {s.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
         </div>
 
         {/* Product Cards Grid */}
