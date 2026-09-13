@@ -4,10 +4,6 @@ import {
   ShieldCheck, 
   Award, 
   FileCheck2, 
-  Clock, 
-  AlertCircle, 
-  CheckCircle2, 
-  Download, 
   FileText,
   Building,
   Zap,
@@ -38,12 +34,13 @@ export const AseanComplianceHub: React.FC<AseanComplianceHubProps> = ({
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold uppercase tracking-wider mb-3">
             <Globe className="w-3.5 h-3.5 text-blue-600" /> Regional Market Access &bull; ASEAN Focused
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-['Space_Grotesk']">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-display">
             ASEAN Electrical Grid & Regulatory Compliance Center
           </h2>
           <p className="mt-3 text-slate-600 text-sm sm:text-base">
-            Luchuan Zhiqiang provides certified, import-ready diesel generator sets designed to meet local voltage, 
-            frequency (50Hz vs 60Hz), national certifications (SNI, TISI, SIRIM, CR, BPS), and Tier 3 equivalent emissions.
+            Luchuan Zhiqiang diesel generator sets are designed around local voltage, frequency (50Hz vs 60Hz),
+            national certification requirements (SNI, TISI, SIRIM, etc.) and Yuchai T3 emission compliance. Applicable
+            certification and import requirements are confirmed per order with the destination authority.
           </p>
         </div>
 
@@ -55,36 +52,44 @@ export const AseanComplianceHub: React.FC<AseanComplianceHubProps> = ({
             </div>
             <div>
               <h4 className="text-sm font-bold text-emerald-950 flex items-center gap-2">
-                AHVER Framework &bull; ASEAN Tier 3 Emission Standard Compliance
+                Emission Compliance &bull; Yuchai T3 (GB 20891 Non-Road Stage III)
               </h4>
               <p className="text-xs text-emerald-800/90 mt-1 leading-relaxed">
-                Since January 2024, Thailand, Vietnam, Indonesia, Malaysia, Philippines, and Cambodia enforce Tier 3 equivalent emission limits on stationary generators &gt;19kW. 
-                All Zhiqiang Yuchai T3 models (GB 20891 Non-Road Stage III) fully comply, ensuring zero customs rejection risk.
+                Stationary gensets face tightening emission review across ASEAN markets. All Zhiqiang Yuchai T3 engines comply with 
+                China GB 20891 Non-Road Stage III (Tier 3 equivalent); we provide emission declarations and engine test files to 
+                support destination-market clearance review.
               </p>
             </div>
           </div>
           <span className="text-xs font-mono font-bold px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-800 border border-emerald-300 shrink-0">
-            100% AHVER READY
+            GB 20891 STAGE III READY
           </span>
         </div>
 
         {/* Country Selector Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 scrollbar-none">
-          {ASEAN_COUNTRIES.map((country) => (
-            <button
-              key={country.id}
-              onClick={() => onSelectCountry(country.id)}
-              className={`px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer border ${
-                activeCountry.id === country.id
-                  ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20 font-bold scale-105'
-                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:text-slate-900'
-              }`}
-            >
-              <span className="text-base">{country.flag}</span>
-              <span>{country.name}</span>
-              <span className="text-[10px] opacity-75 font-mono">({country.frequency})</span>
-            </button>
-          ))}
+        <div className="flex flex-col gap-3 mb-8">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+            {ASEAN_COUNTRIES.map((country) => (
+              <button
+                key={country.id}
+                onClick={() => onSelectCountry(country.id)}
+                className={`shrink-0 px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap flex items-center gap-2 transition-colors cursor-pointer border ${
+                  activeCountry.id === country.id
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20 font-bold'
+                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:text-slate-900'
+                }`}
+              >
+                <span className="text-base">{country.flag}</span>
+                <span>{country.name}</span>
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center justify-between gap-2 text-xs text-slate-500">
+            <span>Select a market to review grid, compliance and demand guidance.</span>
+            <span className="inline-flex shrink-0 items-center gap-1 font-semibold text-blue-600">
+              {activeCountry.name} Market Overview
+            </span>
+          </div>
         </div>
 
         {/* Detailed Active Country Compliance Panel */}
@@ -96,7 +101,7 @@ export const AseanComplianceHub: React.FC<AseanComplianceHubProps> = ({
               <span className="text-4xl sm:text-5xl">{activeCountry.flag}</span>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-2xl font-black text-slate-900 font-['Space_Grotesk']">
+                  <h3 className="text-2xl font-black text-slate-900 font-display">
                     {activeCountry.name} ({activeCountry.chineseName})
                   </h3>
                   <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
@@ -109,8 +114,8 @@ export const AseanComplianceHub: React.FC<AseanComplianceHubProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="text-right">
+            <div className="flex items-center gap-3 shrink-0">
+              <div className="text-right max-w-sm">
                 <span className="text-[11px] text-slate-500 block">Zhiqiang Factory Status:</span>
                 <span className="text-xs font-bold text-blue-600 font-mono">
                   {activeCountry.zhiqiangStatus}
@@ -119,19 +124,19 @@ export const AseanComplianceHub: React.FC<AseanComplianceHubProps> = ({
             </div>
           </div>
 
-          {/* 4 Core Pillars for the Target Market */}
+          {/* 4 Core Pillars for the Target Market — equal-height cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
             
             {/* 1. Grid Parameters */}
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+            <div className="flex flex-col p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
               <div className="flex items-center gap-2 text-slate-600 font-semibold">
-                <Zap className="w-4 h-4 text-blue-600" />
+                <Zap className="w-4 h-4 text-blue-600 shrink-0" />
                 <span>Electrical Grid Standards</span>
               </div>
               <div className="text-base font-bold text-slate-900 font-mono">
                 {activeCountry.voltageFrequency}
               </div>
-              <p className="text-slate-600 leading-relaxed">
+              <p className="flex-1 text-slate-600 leading-relaxed">
                 {activeCountry.id === 'philippines' 
                   ? 'High speed 1800 RPM 4-pole alternator pairing required. Fully factory-calibrated.'
                   : 'Standard 1500 RPM 50Hz configuration. Wide voltage range tolerance (+/-10%).'
@@ -140,9 +145,9 @@ export const AseanComplianceHub: React.FC<AseanComplianceHubProps> = ({
             </div>
 
             {/* 2. Certification & Safety */}
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+            <div className="flex flex-col p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
               <div className="flex items-center gap-2 text-slate-600 font-semibold">
-                <FileCheck2 className="w-4 h-4 text-blue-600" />
+                <FileCheck2 className="w-4 h-4 text-blue-600 shrink-0" />
                 <span>Mandatory Certification</span>
               </div>
               <div className="text-sm font-bold text-blue-700">
@@ -151,35 +156,35 @@ export const AseanComplianceHub: React.FC<AseanComplianceHubProps> = ({
               <div className="text-[11px] text-slate-500">
                 Compliance Processing: <strong className="text-slate-800">{activeCountry.complianceTime}</strong>
               </div>
-              <p className="text-slate-600 leading-relaxed">
+              <p className="flex-1 text-slate-600 leading-relaxed">
                 Zhiqiang provides full technical files, factory test records, and agency audit coordination.
               </p>
             </div>
 
-            {/* 3. Tariff Exemption (Form E) */}
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+            {/* 3. ACFTA Preferential Tariff (Form E) */}
+            <div className="flex flex-col p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
               <div className="flex items-center gap-2 text-slate-600 font-semibold">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>Preferential Tariff Advantage</span>
+                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Preferential Tariff Eligibility</span>
               </div>
               <div className="text-sm font-bold text-emerald-700">
-                0% Import Tariff (Form E)
+                ACFTA Form E (Conditional)
               </div>
-              <p className="text-slate-600 leading-relaxed">
+              <p className="flex-1 text-slate-600 leading-relaxed">
                 {activeCountry.tariffBenefit}
               </p>
             </div>
 
             {/* 4. Priority Power Demand */}
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+            <div className="flex flex-col p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
               <div className="flex items-center gap-2 text-slate-600 font-semibold">
-                <Building className="w-4 h-4 text-sky-600" />
+                <Building className="w-4 h-4 text-sky-600 shrink-0" />
                 <span>Key Demand Power Range</span>
               </div>
               <div className="text-sm font-bold text-sky-700">
                 {activeCountry.priorityPowerRange}
               </div>
-              <p className="text-slate-600 leading-relaxed">
+              <p className="flex-1 text-slate-600 leading-relaxed">
                 Optimized inventory models for fast ocean shipment within 15–25 days.
               </p>
             </div>

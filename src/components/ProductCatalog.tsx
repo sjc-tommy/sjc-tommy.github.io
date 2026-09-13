@@ -200,11 +200,11 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                 }`}
               >
                 <div>
-                  {/* Image Header with Spec Pills — links to the crawlable product page */}
-                  <a
-                    href={`./products/${p.primePowerKw}kw-diesel-generator.html`}
-                    aria-label={`${p.model} ${p.primePowerKw} kW diesel generator — full product page`}
-                    className="relative h-48 bg-slate-100 overflow-hidden block group/img"
+                  {/* Image Header with Spec Pills — opens specs modal */}
+                  <button
+                    onClick={() => onViewSpecs(p)}
+                    aria-label={`${p.model} ${p.primePowerKw} kW diesel generator — view specifications`}
+                    className="relative h-48 bg-slate-100 overflow-hidden block group/img cursor-pointer w-full text-left"
                   >
                     <img
                       src={p.image}
@@ -254,7 +254,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                         </div>
                       </div>
                     </div>
-                  </a>
+                  </button>
 
                   {/* Body Specs — aligned 2-col spec rows, same values as detail view */}
                   <div className="p-4 space-y-3">

@@ -107,7 +107,7 @@ export default function App() {
     <div className="min-h-screen bg-white text-slate-900 flex flex-col font-['Plus_Jakarta_Sans',sans-serif] w-full max-w-full overflow-x-hidden">
       
       {/* Top Navigation — every menu item navigates to a real page */}
-      <Navbar />
+      <Navbar onNavigateTo={handleNavigateTo} />
 
       {/* Main Content Layout */}
       <main className="flex-1">
@@ -144,13 +144,13 @@ export default function App() {
         />
 
         {/* 5. Yuchai Engine Series */}
-        <EnginesSection onOpenRfq={handleOpenRfq} />
+        <EnginesSection onOpenRfq={handleOpenRfq} onViewSpecs={handleViewSpecs} />
 
         {/* 6. In-House Alternators (TFW Brushless & STC) */}
         <AlternatorsSection onOpenRfq={handleOpenRfq} />
 
         {/* 7. Product Configurator — Build Your Custom Genset */}
-        <ProductConfigurator onOpenRfq={handleOpenRfq} />
+        <ProductConfigurator onOpenRfq={handleOpenRfq} onViewSpecs={handleViewSpecs} />
 
         {/* 8. Perkins-Style Parts & Service Lifecycle Center */}
         <PartsAndServiceSection onOpenRfq={handleOpenRfq} />
