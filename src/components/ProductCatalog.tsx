@@ -1,18 +1,15 @@
 import React, { useState, useMemo } from 'react';
 import { 
   Search, 
-  Filter, 
   Zap, 
-  Fuel, 
-  Layers, 
   FileSpreadsheet, 
   FileText, 
   ArrowRight, 
   Check, 
   ShieldCheck, 
   Eye,
-  SlidersHorizontal,
-  Scale
+  Scale,
+  ArrowUpRight
 } from 'lucide-react';
 import { GENSET_PRODUCTS } from '../data/gensets';
 import { GensetProduct } from '../types';
@@ -26,6 +23,7 @@ interface ProductCatalogProps {
   onOpenComparisonModal: () => void;
   activePowerFilter: string;
   setActivePowerFilter: (filter: string) => void;
+  featured?: boolean;
 }
 
 export const ProductCatalog: React.FC<ProductCatalogProps> = ({
@@ -37,14 +35,13 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
   onOpenComparisonModal,
   activePowerFilter,
   setActivePowerFilter,
+  featured = false,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCanopy, setSelectedCanopy] = useState<'all' | 'open' | 'silent' | 'container' | 'trailer'>('all');
-  const [selectedFrequency, setSelectedFrequency] = useState<'all' | '50Hz' | '60Hz'>('all');
   const [perkinsSeriesFilter, setPerkinsSeriesFilter] = useState<'all' | '400-1104' | '1106' | '2000' | '4000'>('all');
 
   const filteredProducts = useMemo(() => {
-    return GENSET_PRODUCTS.filter((item) => {
+    let products = GENSET_PRODUCTS.filter((item) => {
       // Search query filter
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
@@ -81,7 +78,14 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
 
       return true;
     });
-  }, [searchQuery, activePowerFilter, perkinsSeriesFilter]);
+    
+    // If featured mode, only show first 3 products (TFW30, TFW50, TFW100)
+    if (featured) {
+      return products.slice(0, 3);
+    }
+    
+    return products;
+  }, [searchQuery, activePowerFilter, perkinsSeriesFilter, featured]);
 
   return (
     <section id="products" className="bg-slate-50/50 py-16 lg:py-24 border-b border-slate-200">
@@ -93,18 +97,18 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold uppercase tracking-wider mb-2">
               <Zap className="w-3.5 h-3.5 text-blue-600" /> Full Power Lineup &bull; 30–2200 kW
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-['Space_Grotesk']">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-display">
               Yuchai-Powered Diesel Generator Sets
             </h2>
             <p className="mt-2 text-slate-600 text-sm max-w-2xl">
               Equipped with genuine Yuchai T3 G-Drive engines and Zhiqiang high-copper TFW brushless alternators. 
-              Factory direct supply with FOB/CIF quotation, OEM customization, and full ASEAN compliance.
+              Factory direct supply with B2B quotation, OEM customization, and full ASEAN compliance.
             </p>
           </div>
 
           {/* Sizing Callout */}
           <div className="text-xs bg-white px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 shrink-0 shadow-2xs">
-            <span className="text-blue-600 font-bold">Strict B2B Policy:</span> All units quoted FOB/CIF upon inquiry. No retail markups.
+            <span className="text-blue-600 font-bold">Strict B2B Policy:</span> All units quoted upon inquiry. No retail markups.
           </div>
         </div>
 
@@ -178,43 +182,6 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                 ))}
               </div>
             </div>
-
-            <div className="flex items-center gap-4 text-slate-600">
-              <div className="flex items-center gap-1.5">
-                <SlidersHorizontal className="w-3.5 h-3.5 text-blue-600" />
-                <span>Canopy:</span>
-                <div className="flex gap-1">
-                  {(['all', 'open', 'silent', 'container'] as const).map((c) => (
-                    <button
-                      key={c}
-                      onClick={() => setSelectedCanopy(c)}
-                      className={`px-2 py-0.5 rounded capitalize cursor-pointer ${
-                        selectedCanopy === c ? 'bg-blue-50 text-blue-700 font-bold' : 'text-slate-500 hover:text-slate-800'
-                      }`}
-                    >
-                      {c === 'all' ? 'All' : c}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex items-center gap-1.5">
-                <span>Freq:</span>
-                <div className="flex gap-1">
-                  {(['all', '50Hz', '60Hz'] as const).map((f) => (
-                    <button
-                      key={f}
-                      onClick={() => setSelectedFrequency(f)}
-                      className={`px-2 py-0.5 rounded cursor-pointer ${
-                        selectedFrequency === f ? 'bg-blue-50 text-blue-700 font-bold' : 'text-slate-500 hover:text-slate-800'
-                      }`}
-                    >
-                      {f === 'all' ? 'All' : f}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
           </div>
 
         </div>
@@ -235,12 +202,18 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                 }`}
               >
                 <div>
-                  {/* Image Header with Spec Pills */}
-                  <div className="relative h-48 bg-slate-100 overflow-hidden">
+                  {/* Image Header with Spec Pills — links to the crawlable product page */}
+                  <a
+                    href={`./products/${p.primePowerKw}kw-diesel-generator.html`}
+                    aria-label={`${p.model} ${p.primePowerKw} kW diesel generator — full product page`}
+                    className="relative h-48 bg-slate-100 overflow-hidden block group/img"
+                  >
                     <img
                       src={p.image}
                       alt={`${p.model} ${p.primePowerKw}kW Yuchai Diesel Generator`}
                       referrerPolicy="no-referrer"
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
@@ -272,66 +245,69 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                       </button>
                     </div>
 
-                    {/* Model Name & Perkins Benchmark on Bottom */}
+                    {/* Model Name & Engine on Bottom */}
                     <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
                       <div>
-                        <h3 className="text-xl font-black text-white font-['Space_Grotesk'] tracking-tight">
+                        <h3 className="text-xl font-black text-white font-display tracking-tight">
                           {p.model}
                         </h3>
                         <div className="text-xs text-blue-300 font-mono font-semibold">
                           Engine: {p.engineModel}
                         </div>
                       </div>
-
-                      {p.perkinsBenchmark && (
-                        <div className="text-right">
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/20 text-white border border-white/30 backdrop-blur font-mono font-semibold">
-                            {p.perkinsBenchmark}
-                          </span>
-                        </div>
-                      )}
                     </div>
-                  </div>
+                  </a>
 
-                  {/* Body Specs */}
-                  <div className="p-5 space-y-4">
+                  {/* Body Specs — aligned 2-col spec rows, same values as detail view */}
+                  <div className="p-4 space-y-3">
                     
-                    {/* 4 Key Factual Specifications Table */}
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                        <span className="text-[11px] text-slate-500 block">Prime / Standby</span>
-                        <span className="font-bold text-slate-900 font-mono">
-                          {p.primePowerKw}kW / {p.standbyPowerKw}kW
-                        </span>
+                    {/* Spec Table: label left, value right, uniform rows */}
+                    <div className="grid grid-cols-1 gap-1.5 text-xs">
+                      <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2 flex items-center justify-between gap-3">
+                        <span className="text-[11px] text-slate-500 shrink-0">Prime Power</span>
+                        <span className="font-semibold text-blue-700 font-mono text-right">{p.primePowerKw} kW / {p.primePowerKva} kVA</span>
                       </div>
-                      <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                        <span className="text-[11px] text-slate-500 block">Displacement</span>
-                        <span className="font-bold text-slate-900 font-mono">
-                          {p.displacementL} L ({p.cylinders} Cyl)
-                        </span>
+                      <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2 flex items-center justify-between gap-3">
+                        <span className="text-[11px] text-slate-500 shrink-0">Standby Power</span>
+                        <span className="font-semibold text-slate-900 font-mono text-right">{p.standbyPowerKw} kW / {p.standbyPowerKva} kVA</span>
                       </div>
-                      <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                        <span className="text-[11px] text-slate-500 block">Fuel Burn (100%)</span>
-                        <span className="font-bold text-emerald-600 font-mono">
-                          {p.fuelConsumptionLh} L/h
-                        </span>
+                      <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2 flex items-center justify-between gap-3">
+                        <span className="text-[11px] text-slate-500 shrink-0">Rated Current</span>
+                        <span className="font-semibold text-slate-900 font-mono text-right">{p.ratedCurrentA} A @ 400V</span>
                       </div>
-                      <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                        <span className="text-[11px] text-slate-500 block">Alternator</span>
-                        <span className="font-bold text-blue-700 font-mono truncate block">
-                          {p.alternatorModel}
-                        </span>
+                      <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2 flex items-center justify-between gap-3">
+                        <span className="text-[11px] text-slate-500 shrink-0">Rated Voltage</span>
+                        <span className="font-semibold text-slate-900 font-mono text-right truncate" title={p.ratedVoltage}>{p.ratedVoltage}</span>
+                      </div>
+                      <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2 flex items-center justify-between gap-3">
+                        <span className="text-[11px] text-slate-500 shrink-0">Engine</span>
+                        <span className="font-semibold text-slate-900 font-mono text-right truncate" title={p.engineModel}>{p.engineModel}</span>
+                      </div>
+                      <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2 flex items-center justify-between gap-3">
+                        <span className="text-[11px] text-slate-500 shrink-0">Displacement</span>
+                        <span className="font-semibold text-slate-900 font-mono text-right">{p.displacementL} L · {p.cylinders} Cyl</span>
+                      </div>
+                      <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2 flex items-center justify-between gap-3">
+                        <span className="text-[11px] text-slate-500 shrink-0">Fuel (100% load)</span>
+                        <span className="font-semibold text-emerald-600 font-mono text-right">{p.fuelConsumptionLh} L/h</span>
+                      </div>
+                      <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2 flex items-center justify-between gap-3">
+                        <span className="text-[11px] text-slate-500 shrink-0">Dry Weight</span>
+                        <span className="font-semibold text-slate-900 font-mono text-right">{p.dryWeightKg} kg</span>
+                      </div>
+                      <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2 flex items-center justify-between gap-3">
+                        <span className="text-[11px] text-slate-500 shrink-0">Noise Level</span>
+                        <span className="font-semibold text-slate-900 font-mono text-right">{p.noiseLevelOpenDb} dB(A) Open</span>
+                      </div>
+                      <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2 flex items-center justify-between gap-3">
+                        <span className="text-[11px] text-slate-500 shrink-0">Alternator</span>
+                        <span className="font-semibold text-slate-900 font-mono text-right truncate" title={p.alternatorModel}>{p.alternatorModel}</span>
                       </div>
                     </div>
 
-                    {/* Competitive Highlight Callout */}
-                    <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed bg-blue-50/50 p-2.5 rounded-xl border border-blue-100">
-                      <strong className="text-blue-800 font-semibold">Competitive Edge:</strong> {p.competitiveHighlight}
-                    </p>
-
-                    {/* Target ASEAN Countries */}
-                    <div className="flex items-center gap-1 flex-wrap text-[11px] text-slate-500">
-                      <span>Key Markets:</span>
+                    {/* Target ASEAN Countries — fixed 2-line height for equal card heights */}
+                    <div className="flex items-center gap-1 flex-wrap text-[11px] text-slate-500 pt-0.5 min-h-[2.75rem]">
+                      <span className="shrink-0">Key Markets:</span>
                       {p.targetAseanMarkets.map((m, idx) => (
                         <span key={idx} className="bg-slate-100 px-2 py-0.5 rounded text-slate-700 font-medium">
                           {m}
@@ -339,11 +315,16 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                       ))}
                     </div>
 
+                    {/* Competitive Highlight Callout — fixed height for equal card heights */}
+                    <p className="text-[11px] text-slate-600 line-clamp-2 h-[3rem] leading-relaxed bg-blue-50/50 px-3 py-1.5 rounded-lg border border-blue-100 overflow-hidden">
+                      <strong className="text-blue-800 font-semibold">Edge:</strong> {p.competitiveHighlight}
+                    </p>
+
                   </div>
                 </div>
 
                 {/* Bottom Action Footer (3-Way: Specs, Printable Datasheet, RFQ) */}
-                <div className="p-3.5 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+                <div className="p-3.5 bg-slate-50 border-t border-slate-100 flex flex-wrap items-center gap-2">
                   <button
                     id={`btn-view-spec-${p.id}`}
                     onClick={() => onViewSpecs(p)}

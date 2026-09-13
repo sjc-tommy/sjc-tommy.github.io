@@ -4,12 +4,14 @@ import { HeroSection } from './components/HeroSection';
 import { MetricsBar } from './components/MetricsBar';
 import { InteractiveSizer } from './components/InteractiveSizer';
 import { ProductCatalog } from './components/ProductCatalog';
+import { EnginesSection } from './components/EnginesSection';
 import { AlternatorsSection } from './components/AlternatorsSection';
 import { PartsAndServiceSection } from './components/PartsAndServiceSection';
 import { AseanComplianceHub } from './components/AseanComplianceHub';
 import { ApplicationsSection } from './components/ApplicationsSection';
 import { FactoryTrustSection } from './components/FactoryTrustSection';
 import { AeoKnowledgeBase } from './components/AeoKnowledgeBase';
+import { ProductConfigurator } from './components/ProductConfigurator';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { ModelComparisonModal } from './components/ModelComparisonModal';
 import { TechnicalDatasheetModal } from './components/TechnicalDatasheetModal';
@@ -17,10 +19,10 @@ import { RfqModal } from './components/RfqModal';
 import { Footer } from './components/Footer';
 import { GensetProduct } from './types';
 import { GENSET_PRODUCTS } from './data/gensets';
-import { MessageSquare, Phone, FileText, ArrowUp } from 'lucide-react';
+import { MessageSquare, FileText, ChevronUp, ChevronDown } from 'lucide-react';
+import { BUSINESS } from './data/site';
 
 export default function App() {
-  const [activeSection, setActiveSection] = useState('hero');
   const [activePowerFilter, setActivePowerFilter] = useState('all');
   const [selectedCountryId, setSelectedCountryId] = useState('vietnam');
   
@@ -95,7 +97,6 @@ export default function App() {
   };
 
   const handleNavigateTo = (sectionId: string) => {
-    setActiveSection(sectionId);
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -105,18 +106,8 @@ export default function App() {
   return (
     <div className="min-h-screen bg-white text-slate-900 flex flex-col font-['Plus_Jakarta_Sans',sans-serif] w-full max-w-full overflow-x-hidden">
       
-      {/* Top Navigation */}
-      <Navbar
-        onOpenRfq={handleOpenRfq}
-        onSelectCountry={(countryId) => {
-          setSelectedCountryId(countryId);
-          handleNavigateTo('asean-hub');
-        }}
-        activeSection={activeSection}
-        setActiveSection={setActiveSection}
-        comparisonCount={comparisonList.length}
-        onOpenComparisonModal={() => setIsComparisonModalOpen(true)}
-      />
+      {/* Top Navigation — every menu item navigates to a real page */}
+      <Navbar />
 
       {/* Main Content Layout */}
       <main className="flex-1">
@@ -149,22 +140,29 @@ export default function App() {
           onOpenComparisonModal={() => setIsComparisonModalOpen(true)}
           activePowerFilter={activePowerFilter}
           setActivePowerFilter={setActivePowerFilter}
+          featured={true}
         />
 
-        {/* 5. In-House Alternators (TFW Brushless & STC) */}
+        {/* 5. Yuchai Engine Series */}
+        <EnginesSection onOpenRfq={handleOpenRfq} />
+
+        {/* 6. In-House Alternators (TFW Brushless & STC) */}
         <AlternatorsSection onOpenRfq={handleOpenRfq} />
 
-        {/* 6. Perkins-Style Parts & Service Lifecycle Center */}
+        {/* 7. Product Configurator — Build Your Custom Genset */}
+        <ProductConfigurator onOpenRfq={handleOpenRfq} />
+
+        {/* 8. Perkins-Style Parts & Service Lifecycle Center */}
         <PartsAndServiceSection onOpenRfq={handleOpenRfq} />
 
-        {/* 7. ASEAN Compliance Hub */}
+        {/* 9. ASEAN Compliance Hub */}
         <AseanComplianceHub
           selectedCountryId={selectedCountryId}
           onSelectCountry={setSelectedCountryId}
           onOpenRfq={handleOpenRfq}
         />
 
-        {/* 8. Severe Applications */}
+        {/* 10. Severe Applications */}
         <ApplicationsSection
           onOpenRfq={handleOpenRfq}
           onFilterPowerRange={(range) => {
@@ -173,10 +171,10 @@ export default function App() {
           }}
         />
 
-        {/* 9. Factory Quality & Load Bank Testing */}
+        {/* 11. Factory Quality & Load Bank Testing */}
         <FactoryTrustSection onOpenRfq={() => handleOpenRfq()} />
 
-        {/* 10. AEO Answer-First Knowledge Base & SEO Strategy Matrix */}
+        {/* 12. AEO Answer-First Knowledge Base */}
         <AeoKnowledgeBase onOpenRfq={handleOpenRfq} />
       </main>
 
@@ -190,25 +188,45 @@ export default function App() {
         }}
       />
 
-      {/* Floating WhatsApp & RFQ Dock for High Conversion */}
-      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3 pointer-events-auto">
+      {/* WhatsApp & RFQ Dock — inline at bottom of main content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex justify-end gap-3">
         <a
-          href="https://wa.me/8613635028889"
+          href={`https://wa.me/${BUSINESS.whatsapp}`}
           target="_blank"
           rel="noopener noreferrer"
           title="Direct WhatsApp with Chief Engineer"
-          className="flex items-center gap-2 px-3.5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white shadow-xl hover:scale-105 transition-all text-xs font-bold"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg hover:scale-105 transition-all text-xs font-bold"
         >
-          <MessageSquare className="w-4 h-4" />
-          <span className="hidden sm:inline">WhatsApp Engineer (+86 136 3502 8889)</span>
+          <MessageSquare className="w-4 h-4 shrink-0" />
+          <span className="text-[11px]">WhatsApp Engineer</span>
         </a>
 
         <button
           onClick={() => handleOpenRfq()}
-          className="flex items-center gap-2 px-4 py-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-600/30 hover:scale-105 transition-all text-xs font-bold cursor-pointer border border-blue-500/50"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/20 hover:scale-105 transition-all text-xs font-bold cursor-pointer border border-blue-500/50"
         >
-          <FileText className="w-4 h-4" />
-          <span>Get Instant FOB/CIF Quote</span>
+          <FileText className="w-4 h-4 shrink-0" />
+          <span className="text-[11px]">Get Instant Quote</span>
+        </button>
+      </div>
+
+      {/* Floating one-screen Up / Down navigation buttons */}
+      <div className="fixed bottom-5 right-3 z-40 flex flex-col gap-2">
+        <button
+          onClick={() => window.scrollBy({ top: -window.innerHeight * 0.85, behavior: 'smooth' })}
+          title="Scroll up one screen"
+          aria-label="Scroll up"
+          className="grid h-10 w-10 place-items-center rounded-full border border-slate-200 bg-white/95 text-slate-600 shadow-lg backdrop-blur transition-colors hover:border-blue-300 hover:text-blue-600 cursor-pointer"
+        >
+          <ChevronUp className="w-4.5 h-4.5" />
+        </button>
+        <button
+          onClick={() => window.scrollBy({ top: window.innerHeight * 0.85, behavior: 'smooth' })}
+          title="Scroll down one screen"
+          aria-label="Scroll down"
+          className="grid h-10 w-10 place-items-center rounded-full border border-slate-200 bg-white/95 text-slate-600 shadow-lg backdrop-blur transition-colors hover:border-blue-300 hover:text-blue-600 cursor-pointer"
+        >
+          <ChevronDown className="w-4.5 h-4.5" />
         </button>
       </div>
 
