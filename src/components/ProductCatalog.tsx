@@ -38,7 +38,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
   featured = false,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [perkinsSeriesFilter, setPerkinsSeriesFilter] = useState<'all' | '400-1104' | '1106' | '2000' | '4000'>('all');
+  const [perkinsSeriesFilter, setPerkinsSeriesFilter] = useState<'400-1104' | '1106' | '2000' | '4000'>('400-1104');
 
   const filteredProducts = useMemo(() => {
     let products = GENSET_PRODUCTS.filter((item) => {
@@ -121,7 +121,6 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             {/* Power Segment Tabs */}
             <div className="flex flex-wrap items-center gap-1.5 w-full lg:w-auto">
               {[
-                { id: 'all', label: 'All (30–2200kW)' },
                 { id: '30-80', label: '30–80 kW (Compact)' },
                 { id: '100-300', label: '100–300 kW (Industrial Main)' },
                 { id: '400-900', label: '400–900 kW (Heavy Mine)' },
@@ -162,7 +161,6 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               <span className="font-semibold text-blue-700 font-mono text-[11px] uppercase">Perkins Series Equiv:</span>
               <div className="flex flex-wrap gap-1">
                 {[
-                  { id: 'all', label: 'All Series' },
                   { id: '400-1104', label: '400 & 1104 (30–100kW)' },
                   { id: '1106', label: '1106 Series (120–250kW)' },
                   { id: '2000', label: '1500 & 2000 (300–800kW)' },

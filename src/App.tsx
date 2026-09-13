@@ -23,7 +23,7 @@ import { MessageSquare, FileText, ChevronUp, ChevronDown } from 'lucide-react';
 import { BUSINESS } from './data/site';
 
 export default function App() {
-  const [activePowerFilter, setActivePowerFilter] = useState('all');
+  const [activePowerFilter, setActivePowerFilter] = useState('30-80');
   const [selectedCountryId, setSelectedCountryId] = useState('vietnam');
   
   // Comparison state (Perkins-style side-by-side engine comparator)
